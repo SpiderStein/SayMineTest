@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <PublishChromeDriver>true</PublishChromeDriver>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CsvHelper" Version="12.1.2" />
+      <PackageReference Include="Selenium.Support" Version="3.141.0" />
+      <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
+      <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="84.0.4147.3001" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="domains.csv" />
+      <Content Include="domains.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+</Project>
