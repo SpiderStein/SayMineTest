@@ -1,0 +1,8 @@
+*   Use azure translator for each page, the source should be auto and the target "en". (check for emails before translating)
+*   Remove spaces for the emails
+*   Check if email is valid
+*   Knows when email ends when it has one of the countries suffixes or one of the common ones.
+*   Continue searching for privacy after searching once, and don't enter to the same links after entering onces (according to the button name. NOT to the link url)
+*   At the start page of each domain, I look for privacy, and if in it's host element, search for an email.
+*   Call the DB DummyB
+*   Query the DOM and dispatch events in order to bypass annoying popups.

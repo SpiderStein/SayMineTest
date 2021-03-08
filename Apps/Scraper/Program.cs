@@ -6,10 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CsvHelper;
+using OpenQA.Selenium.Chrome;
 
-namespace Assignment
+namespace Scraper
 {
-    // ReSharper disable once ClassNeverInstantiated
     public class Program
     {
         private static readonly BlockingCollection<ScrapeResult>
@@ -19,16 +19,34 @@ namespace Assignment
 
         public static void Main(string[] args)
         {
-            _domains = LoadDomainsFromFile();
+            // _domains = LoadDomainsFromFile();
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            // var stopwatch = new Stopwatch();
+            // stopwatch.Start();
 
-            ScrapeAllDomains();
+            // ScrapeAllDomains();
 
-            stopwatch.Stop();
+            // stopwatch.Stop();
 
-            PrintScrapeResult(stopwatch);
+            // PrintScrapeResult(stopwatch);
+
+            var chromeOptions = new ChromeOptions();
+            chromeOptions.AddArgument("--disable-extensions");
+            chromeOptions.AddArgument("--incognito");
+            chromeOptions.AddArgument("--disable-plugins-discovery");
+            chromeOptions.AddArgument("--headless");
+            chromeOptions.AddArgument("--disable-dev-shm-usage");
+            chromeOptions.AddArgument("--ignore-certificate-errors");
+            chromeOptions.AddArgument("--window-size=1920,1200");
+            chromeOptions.AddArgument("--user-agent=\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\"");
+
+            var webDriver = new ChromeDriver(Directory.GetCurrentDirectory(), chromeOptions);
+
+            webDriver.Navigate().GoToUrl("https://saymine.com");
+
+            var title = webDriver.Title;
+            Console.WriteLine($"Got :{title}");
+
         }
 
         private static void ScrapeAllDomains()

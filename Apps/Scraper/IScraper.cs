@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Assignment
+namespace Scraper
 {
     public interface IScraper
     {
