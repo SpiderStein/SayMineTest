@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/be_assignment-master/Assignment/Assignment.csproj",
+                "${workspaceFolder}/Executables/Scraper/Executable/Assignment.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/be_assignment-master/Assignment/Assignment.csproj",
+                "${workspaceFolder}/Executables/Scraper/Executable/Assignment.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -32,7 +32,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/be_assignment-master/Assignment/Assignment.csproj",
+                "${workspaceFolder}/Executables/Scraper/Executable/Assignment.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
