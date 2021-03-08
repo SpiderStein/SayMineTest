@@ -34,18 +34,24 @@ namespace Scraper
             chromeOptions.AddArgument("--disable-extensions");
             chromeOptions.AddArgument("--incognito");
             chromeOptions.AddArgument("--disable-plugins-discovery");
-            chromeOptions.AddArgument("--headless");
+            // chromeOptions.AddArgument("--headless");
             chromeOptions.AddArgument("--disable-dev-shm-usage");
             chromeOptions.AddArgument("--ignore-certificate-errors");
             chromeOptions.AddArgument("--window-size=1920,1200");
             chromeOptions.AddArgument("--user-agent=\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\"");
 
-            var webDriver = new ChromeDriver(Directory.GetCurrentDirectory(), chromeOptions);
+            var webDriver = new ChromeDriver(Environment.GetEnvironmentVariable("ChromeDriverLocation"), chromeOptions);
 
-            webDriver.Navigate().GoToUrl("https://saymine.com");
+            // webDriver.Navigate().GoToUrl("https://saymine.com");
 
-            var title = webDriver.Title;
-            Console.WriteLine($"Got :{title}");
+            // var title = webDriver.Title;
+            // Console.WriteLine($"Got :{title}");
+
+            webDriver.Navigate().GoToUrl("https://www.espn.com/");
+            Console.WriteLine(webDriver.Url);
+            // webDriver.FindElementByName("&lpos=sitenavdefault+sitenav_nfl").Click();
+            // Console.WriteLine(webDriver.Url);
+
 
         }
 

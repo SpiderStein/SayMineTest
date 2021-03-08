@@ -18,7 +18,10 @@
             "cwd": "${workspaceFolder}/Apps/Scraper",
             "OS-COMMENT5": "For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console",
             "console": "internalConsole",
-            "stopAtEntry": false
+            "stopAtEntry": false,
+            "env": {
+                "ChromeDriverLocation": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper"
+            }
         },
         {
             "name": ".NET Core Attach",
