@@ -47,10 +47,10 @@ namespace Scraper
             // var title = webDriver.Title;
             // Console.WriteLine($"Got :{title}");
 
-            webDriver.Navigate().GoToUrl("https://www.espn.com/");
+            webDriver.Navigate().GoToUrl("https://www.espncricinfo.com/");
             Console.WriteLine(webDriver.Url);
-            // webDriver.FindElementByName("&lpos=sitenavdefault+sitenav_nfl").Click();
-            // Console.WriteLine(webDriver.Url);
+            webDriver.FindElementByTagName("a").Click();
+            Console.WriteLine(webDriver.Url);
 
 
         }

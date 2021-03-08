@@ -5,4 +5,5 @@
 *   Continue searching for privacy after searching once, and don't enter to the same links after entering onces (according to the button name. NOT to the link url)
 *   At the start page of each domain, I look for privacy, and if in it's host element, search for an email.
 *   Call the DB DummyB
-*   Query the DOM and dispatch events in order to bypass annoying popups.
+*   Don't worry about ad popups.
+*   Don't add email duplicates.
