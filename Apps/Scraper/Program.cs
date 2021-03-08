@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CsvHelper;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
 namespace Scraper
@@ -17,7 +18,7 @@ namespace Scraper
 
         private static IEnumerable<string> _domains;
 
-        public static void Main(string[] args)
+        public async static Task Main()
         {
             // _domains = LoadDomainsFromFile();
 
@@ -34,25 +35,18 @@ namespace Scraper
             chromeOptions.AddArgument("--disable-extensions");
             chromeOptions.AddArgument("--incognito");
             chromeOptions.AddArgument("--disable-plugins-discovery");
-            // chromeOptions.AddArgument("--headless");
+            chromeOptions.AddArgument("--headless");
             chromeOptions.AddArgument("--disable-dev-shm-usage");
             chromeOptions.AddArgument("--ignore-certificate-errors");
             chromeOptions.AddArgument("--window-size=1920,1200");
             chromeOptions.AddArgument("--user-agent=\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\"");
 
             var webDriver = new ChromeDriver(Environment.GetEnvironmentVariable("ChromeDriverLocation"), chromeOptions);
+            webDriver.Navigate().GoToUrl("https://saymine.com");
+            System.Console.WriteLine(webDriver.PageSource);
 
-            // webDriver.Navigate().GoToUrl("https://saymine.com");
-
-            // var title = webDriver.Title;
-            // Console.WriteLine($"Got :{title}");
-
-            webDriver.Navigate().GoToUrl("https://www.espncricinfo.com/");
-            Console.WriteLine(webDriver.Url);
-            webDriver.FindElementByTagName("a").Click();
-            Console.WriteLine(webDriver.Url);
-
-
+            webDriver.FindElement(By.XPath("//*[contains(text(),'privacy')] | //*[contains(text(),'Privacy')] | //*[contains(text(),'PRIVACY')]"))
+            // // Looks like there's no matches func supported
         }
 
         private static void ScrapeAllDomains()
