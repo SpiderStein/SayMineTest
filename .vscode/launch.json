@@ -20,7 +20,9 @@
             "console": "internalConsole",
             "stopAtEntry": false,
             "env": {
-                "ChromeDriverLocation": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper"
+                "ChromeDriverLocation": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper",
+                "TJ": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper/Assets/TJ.txt",
+                "Beast": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper/Assets/Beast.txt",
             }
         },
         {

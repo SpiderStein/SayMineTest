@@ -74,13 +74,14 @@ namespace Scraper
         //     }
         // }
 
-        public static void Main()
+        public static async Task Main()
         {
             using var logger = new LoggerConfiguration()
                 .WriteTo.Console()
                 .CreateLogger();
 
-            logger.Information("Hello, Serilog!");
+            logger.Fatal(Environment.NewLine + File.ReadAllText(Environment.GetEnvironmentVariable("TJ")));
+            logger.Fatal(Environment.NewLine + File.ReadAllText(Environment.GetEnvironmentVariable("BEAST")));
         }
 
 

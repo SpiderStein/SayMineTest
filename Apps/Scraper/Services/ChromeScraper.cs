@@ -1,3 +1,4 @@
+using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,7 +18,11 @@ namespace Scraper
 
         public Task<IEnumerable<ScrapeResult>> GetPrivacyRelatedEmails(IEnumerable<string> domains)
         {
-            throw new System.NotImplementedException();
+            this._log.Fatal("TJ and BEAST the cats started to run after the mouse clicks in the web.. hopefully they'll hunt privacy related emails..");
+            this._log.Fatal(Environment.NewLine + File.ReadAllText(Environment.GetEnvironmentVariable("TJ")));
+            this._log.Fatal(Environment.NewLine + File.ReadAllText(Environment.GetEnvironmentVariable("BEAST")));
+
+            throw new NotImplementedException();
         }
 
         private void LogScrapeResults(IEnumerable<string> domains, IEnumerable<ScrapeResult> results)
