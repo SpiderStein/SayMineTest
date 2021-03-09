@@ -1,0 +1,116 @@
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using CsvHelper;
+using Newtonsoft.Json;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+
+namespace Scraper
+{
+    public class Entrypoint
+    {
+        // public async static Task Main()
+        // {
+        // _domains = LoadDomainsFromFile();
+
+        // var stopwatch = new Stopwatch();
+        // stopwatch.Start();
+
+        // ScrapeAllDomains();
+
+        // stopwatch.Stop();
+
+        // PrintScrapeResult(stopwatch);
+
+        // var chromeOptions = new ChromeOptions();
+        // chromeOptions.AddArgument("--disable-extensions");
+        // chromeOptions.AddArgument("--incognito");
+        // chromeOptions.AddArgument("--disable-plugins-discovery");
+        // chromeOptions.AddArgument("--headless");
+        // chromeOptions.AddArgument("--disable-dev-shm-usage");
+        // chromeOptions.AddArgument("--ignore-certificate-errors");
+        // chromeOptions.AddArgument("--window-size=1920,1200");
+        // chromeOptions.AddArgument("--user-agent=\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\"");
+
+        // var webDriver = new ChromeDriver(Environment.GetEnvironmentVariable("ChromeDriverLocation"), chromeOptions);
+        // webDriver.Navigate().GoToUrl("https://saymine.com");
+        // System.Console.WriteLine(webDriver.PageSource);
+
+        // webDriver.FindElement(By.XPath("//*[contains(text(),'privacy')] | //*[contains(text(),'Privacy')] | //*[contains(text(),'PRIVACY')]"))
+        // // Looks like there's no matches func supported
+
+        //     var subKey = "d0c6f0d8b1fb49899eb2af3b21f90ae3";
+        //     var endpoint = "https://api.cognitive.microsofttranslator.com/";
+        //     var location = "global";
+        //     // Output languages are defined as parameters, input language detected.
+        //     string route = "/translate?api-version=3.0&to=en";
+        //     string textToTranslate = "פרטיות";
+        //     object[] body = new object[] { new { Text = textToTranslate } };
+        //     var requestBody = JsonConvert.SerializeObject(body);
+
+        //     using (var client = new HttpClient())
+        //     using (var request = new HttpRequestMessage())
+        //     {
+        //         // Build the request.
+        //         request.Method = HttpMethod.Post;
+        //         request.RequestUri = new Uri(endpoint + route);
+        //         request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+        //         request.Headers.Add("Ocp-Apim-Subscription-Key", subKey);
+        //         request.Headers.Add("Ocp-Apim-Subscription-Region", location);
+
+        //         // Send the request and get response.
+        //         HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
+        //         // Read response as a string.
+        //         string result = await response.Content.ReadAsStringAsync();
+        //         Console.WriteLine(result);
+        //     }
+        // }
+
+
+
+        private static void ScrapeAllDomains()
+        {
+            // TODO:
+            // Initialize scraper and run on all entries in _domains
+            // This method must store the results in _scrapeResults
+
+            throw new NotImplementedException();
+        }
+
+        private static void PrintScrapeResult(Stopwatch stopwatch)
+        {
+            Console.WriteLine($"Scraping {_domains.Count()} domains took: {stopwatch.Elapsed}");
+
+            // print first results
+            foreach (var scrapeResult in _scrapeResults.Take(10))
+            {
+                Console.WriteLine($"domain: {scrapeResult.Domain} emails: {scrapeResult}");
+            }
+        }
+
+        private static IEnumerable<string> LoadDomainsFromFile()
+        {
+            var listAddress = new List<string>();
+            var filePath = Path.Combine(Environment.CurrentDirectory, "domains.csv");
+
+            using var reader = File.OpenText(filePath);
+            using var csv = new CsvReader(reader);
+
+            csv.Configuration.HasHeaderRecord = false;
+
+            while (csv.Read())
+            {
+                listAddress.Add(csv.GetField(0));
+            }
+
+            return listAddress;
+        }
+    }
+}
