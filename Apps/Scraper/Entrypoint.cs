@@ -80,8 +80,11 @@ namespace Scraper
                 .WriteTo.Console()
                 .CreateLogger();
 
+            logger.Fatal("TJ and BEAST the cats started to run after the mouse clicks in the web.. hopefully they'll hunt privacy related emails..");
             logger.Fatal(Environment.NewLine + File.ReadAllText(Environment.GetEnvironmentVariable("TJ")));
             logger.Fatal(Environment.NewLine + File.ReadAllText(Environment.GetEnvironmentVariable("BEAST")));
+
+
         }
 
 

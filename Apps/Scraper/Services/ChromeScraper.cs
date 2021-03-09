@@ -13,16 +13,25 @@ namespace Scraper
     {
         private Stopwatch _stopwatch;
         private ChromeDriver _driver;
-        private TranslatorDeps _transDeps;
         private ILogger _log;
+        private Translator _translator;
+
+        public ChromeScraper(
+            Stopwatch stopwatch,
+            ChromeDriver chromeDriver,
+            Translator translator,
+            ILogger logger
+        )
+        {
+            this._stopwatch = stopwatch;
+            this._driver = chromeDriver;
+            this._translator = translator;
+            this._log = logger;
+        }
 
         public Task<IEnumerable<ScrapeResult>> GetPrivacyRelatedEmails(IEnumerable<string> domains)
         {
-            this._log.Fatal("TJ and BEAST the cats started to run after the mouse clicks in the web.. hopefully they'll hunt privacy related emails..");
-            this._log.Fatal(Environment.NewLine + File.ReadAllText(Environment.GetEnvironmentVariable("TJ")));
-            this._log.Fatal(Environment.NewLine + File.ReadAllText(Environment.GetEnvironmentVariable("BEAST")));
 
-            throw new NotImplementedException();
         }
 
         private void LogScrapeResults(IEnumerable<string> domains, IEnumerable<ScrapeResult> results)
