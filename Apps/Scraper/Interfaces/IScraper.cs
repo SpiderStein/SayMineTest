@@ -5,6 +5,6 @@ namespace Scraper
 {
     public interface IScraper
     {
-        Task<IEnumerable<ScrapeResult>> GetPrivacyRelatedEmails(IEnumerable<string> domains);
+        Task<ScrapeResult> GetPrivacyRelatedEmails(string domain);
     }
 }

@@ -6,6 +6,7 @@ using OpenQA.Selenium.Chrome;
 using System.Linq;
 using System;
 using Serilog;
+using OpenQA.Selenium;
 
 namespace Scraper
 {
@@ -29,9 +30,14 @@ namespace Scraper
             this._log = logger;
         }
 
-        public Task<IEnumerable<ScrapeResult>> GetPrivacyRelatedEmails(IEnumerable<string> domains)
+        public Task<ScrapeResult> GetPrivacyRelatedEmails(string domain) // I should save immediately after getting the result, outside of the call.
         {
+            throw new NotImplementedException();
+            try
+            {
 
+            }
+            catch (ElementNotInteractableException) { } // Continue if this error is occured.
         }
 
         private void LogScrapeResults(IEnumerable<string> domains, IEnumerable<ScrapeResult> results)
