@@ -11,6 +11,7 @@ using CsvHelper;
 using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using Serilog;
 
 namespace Scraper
 {
@@ -73,6 +74,15 @@ namespace Scraper
         //     }
         // }
 
+        public static void Main()
+        {
+            using var logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .CreateLogger();
+
+            logger.Information("Hello, Serilog!");
+        }
+
 
 
         private static void ScrapeAllDomains()
@@ -82,17 +92,6 @@ namespace Scraper
             // This method must store the results in _scrapeResults
 
             throw new NotImplementedException();
-        }
-
-        private static void PrintScrapeResult(Stopwatch stopwatch)
-        {
-            Console.WriteLine($"Scraping {_domains.Count()} domains took: {stopwatch.Elapsed}");
-
-            // print first results
-            foreach (var scrapeResult in _scrapeResults.Take(10))
-            {
-                Console.WriteLine($"domain: {scrapeResult.Domain} emails: {scrapeResult}");
-            }
         }
 
         private static IEnumerable<string> LoadDomainsFromFile()
