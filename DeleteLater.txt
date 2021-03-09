@@ -2,7 +2,7 @@
 *   Remove spaces for the emails
 *   Check if email is valid
 *   Knows when email ends when it has one of the countries suffixes or one of the common ones.
-*   Continue searching for privacy after searching once, and don't enter to the same links after entering onces (according to the button name. NOT to the link url)
+*   Continue searching for privacy after searching once, and don't enter to the same links after entering once (according to the button name. NOT to the link url)
 *   At the start page of each domain, I look for privacy, and in its host element, search for an email.
 *   Call the DB DummyB
 *   Don't worry about ad popups.
