@@ -39,9 +39,9 @@ namespace Scraper
         /// <param name="to">The name of the language that the input will be translated to.</param>
         /// <exception cref="OperationCanceledException">When the Translator service is unresponsive.</exception>
         /// <exception cref="Exception"></exception>
-        public Task Translate(string from, string to, string input)
+        public Task<TranslationResult> Translate(string from, string to, string input)
         {
-            Task.Run(async () =>
+            return Task.Run<TranslationResult>(async () =>
             {
                 var reqBody = JsonConvert.SerializeObject(new[] { new { Text = input } });
                 using var request = new HttpRequestMessage();
@@ -51,9 +51,10 @@ namespace Scraper
                 request.Headers.Add("Ocp-Apim-Subscription-Key", this._secret);
                 request.Headers.Add("Ocp-Apim-Subscription-Region", this._region);
                 using var tokenSrc = new CancellationTokenSource(5000);
+                HttpResponseMessage response;
                 try
                 {
-                    var response = await this._client.SendAsync(request, tokenSrc.Token).ConfigureAwait(false);
+                    response = await this._client.SendAsync(request, tokenSrc.Token).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -65,6 +66,8 @@ namespace Scraper
                     }
                     throw;
                 }
+                string result = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<TranslationResult[]>(result)[0];
             });
         }
     }
