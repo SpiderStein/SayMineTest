@@ -9,8 +9,17 @@ namespace Scraper
         /// The url where the scraping process takes place.
         /// </summary>
         public string Domain { get; set; }
-
+        /// <summary>
+        /// Scraped email addresses.
+        /// </summary>
         public ICollection<ScrapedEmailAddress> EmailAddresses { get; set; }
+        /// <summary>
+        /// The detected languages from 1 "a" htmlElement textContent (method result) that's sampled. 
+        /// </summary>
+        public DetectResult LangDetectResult { get; set; }
+
+
+
 
         public override string ToString()
         {
