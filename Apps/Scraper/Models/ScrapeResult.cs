@@ -5,6 +5,9 @@ namespace Scraper
 {
     public class ScrapeResult
     {
+        /// <summary>
+        /// The url where the scraping process takes place.
+        /// </summary>
         public string Domain { get; set; }
 
         public ICollection<ScrapedEmailAddress> EmailAddresses { get; set; }

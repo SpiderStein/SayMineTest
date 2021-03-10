@@ -20,9 +20,10 @@
             "console": "internalConsole",
             "stopAtEntry": false,
             "env": {
-                "ChromeDriverLocation": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper",
+                "CHROME_DRIVER_LOCATION": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper",
                 "TJ": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper/Assets/TJ.txt",
-                "Beast": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper/Assets/Beast.txt",
+                "BEAST": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper/Assets/Beast.txt",
+                "AMOUNT_OF_HIRERCHIES_ALLOWED_TO_NAV_FROM_ROOT": 2
             }
         },
         {

@@ -41,7 +41,7 @@ namespace Scraper
             chromeOptions.AddArgument("--window-size=1920,1200");
             chromeOptions.AddArgument("--user-agent=\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\"");
 
-            var webDriver = new ChromeDriver(Environment.GetEnvironmentVariable("ChromeDriverLocation"), chromeOptions);
+            var webDriver = new ChromeDriver(Environment.GetEnvironmentVariable("CHROME_DRIVER_LOCATION"), chromeOptions);
             webDriver.Navigate().GoToUrl("https://www.sports-reference.com/privacy.html");
             System.Console.WriteLine(webDriver.Title);
 

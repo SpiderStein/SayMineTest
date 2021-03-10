@@ -12,3 +12,14 @@
 *   Ignore Uninteractive button error.
 
 
+New demands:
+
+*   Translate each page after navigating.
+*   Get all the the "a" tags, and if they contain an email inside them, only get it. If not, than navigate to the "href" prop value url.
+    Repeat previous steps CONFIGURABLE times (arbitrarily 2 times). insert into a duplicateCheck hashset the found emails and validate, and
+    regardless to the validation result, insert into the DB with the new ScrapeResult model that's described below ! Go back in the browser history stack
+    and redo everything.
+*   DB insertion can be without the logger.
+*   Scrape result should be extended, to have the following props: isValid, scrapeTime, urlThatContainedTheEmail and if maybe more if I think about something.
+*   Provide for each scrape a configurable time.
+*   Every scraping will be on a seperate task that runs on the thread pool.
