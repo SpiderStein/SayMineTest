@@ -18,6 +18,7 @@ namespace Scraper
 {
     public class Entrypoint
     {
+        // TODO: Validate the configuration if there's a spare time.
         public async static Task Main()
         {
             // _domains = LoadDomainsFromFile();

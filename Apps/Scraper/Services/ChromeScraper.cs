@@ -30,15 +30,45 @@ namespace Scraper
             this._log = logger;
         }
 
-        public Task<ScrapeResult> GetPrivacyRelatedEmails(string domain) // I should save immediately after getting the result, outside of the call.
-        {
-            throw new NotImplementedException();
-            try
-            {
 
-            }
-            catch (ElementNotInteractableException) { } // Continue if this error is occured.
+
+
+
+
+
+        // I should save immediately after getting the result, outside of the call.
+        public Task<ScrapeResult> GetPrivacyRelatedEmails(string domain, byte amountOfHopsAllowedFromDomain)
+        {
+            return Task.Run<ScrapeResult>(() =>
+            {
+                try
+                {
+                    // Urls sorted by the hop that they are discovered at. The array indexes are the hops.
+                    var urlsToScrape = new List<string>[amountOfHopsAllowedFromDomain];
+                    for (int index = 0; index < urlsToScrape.Length; index++)
+                    {
+                        urlsToScrape[index] = new List<string>();
+                    }
+
+                    for (int hops = 0; hops < amountOfHopsAllowedFromDomain; hops++)
+                    {
+                        this._driver.Navigate().GoToUrl(domain);
+                        // TODO: Continue from here
+                        if (hops + 1 == amountOfHopsAllowedFromDomain) // If it's the highest allowed hop.
+                        {
+
+                        }
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    this._log.Error(ex.ToString());
+                    throw;
+                }
+            })
         }
+
+
 
         private void LogScrapeResults(IEnumerable<string> domains, IEnumerable<ScrapeResult> results)
         {

@@ -16,6 +16,7 @@ namespace Scraper
         private string _region;
         private HttpClient _client;
         private string _translateRoute;
+        private string _detectLangRoute;
         private ILogger log;
 
         public Translator(
@@ -23,6 +24,8 @@ namespace Scraper
             string endpoint,
             string region,
             HttpClient translationServiceClient,
+            string translateFunctionRoute,
+            string detectLangFunctionRoute,
             ILogger logger
         )
         {
@@ -30,6 +33,9 @@ namespace Scraper
             this._endpoint = endpoint;
             this._region = region;
             this._client = translationServiceClient;
+            this._translateRoute = translateFunctionRoute;
+            this._detectLangRoute = detectLangFunctionRoute;
+            this.log = logger;
         }
 
         /// <summary>
@@ -68,6 +74,38 @@ namespace Scraper
                 }
                 string result = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<TranslationResult[]>(result)[0];
+            });
+        }
+
+        public Task<DetectResult> DetectLang(string input)
+        {
+            return Task.Run<DetectResult>(async () =>
+            {
+
+                var reqBody = JsonConvert.SerializeObject(new[] { new { Text = input } });
+                using var request = new HttpRequestMessage();
+                request.Method = HttpMethod.Post;
+                request.RequestUri = new Uri(this._endpoint + this._detectLangRoute);
+                request.Content = new StringContent(reqBody, Encoding.UTF8, "application/json");
+                request.Headers.Add("Ocp-Apim-Subscription-Key", this._secret);
+                using var tokenSrc = new CancellationTokenSource(5000);
+                HttpResponseMessage response;
+                try
+                {
+                    response = await this._client.SendAsync(request, tokenSrc.Token).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    var agEx = ex as AggregateException;
+                    if (agEx != null && agEx.InnerExceptions.Count == 1 && agEx.InnerException is OperationCanceledException)
+                    {
+                        this.log.Fatal("\"Translator\" service is unresponsive");
+                        throw agEx;
+                    }
+                    throw;
+                }
+                string result = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<DetectResult[]>(result)[0];
             });
         }
     }
