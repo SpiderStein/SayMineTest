@@ -45,6 +45,8 @@ namespace Scraper
             {
                 this._logger.Fatal(ex.ToString());
             }
+            execTimer.Stop();
+            this._logger.Information(execTimer.Elapsed.TotalMilliseconds.ToString());
         }
     }
 }
