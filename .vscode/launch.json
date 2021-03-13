@@ -23,8 +23,7 @@
                 "CHROME_DRIVER_LOCATION": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper",
                 "TJ": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper/Assets/TJ.txt",
                 "BEAST": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper/Assets/Beast.txt",
-                "AMOUNT_OF_HOPS_ALLOWED_FROM_GIVEN_DOMAIN": 2,
-                "MAX_AMOUNT_OF_TEXTS_TO_DETECT_TO_DETERMINE_DOC_LANG": 3
+                "AMOUNT_OF_HOPS_ALLOWED_FROM_GIVEN_DOMAIN": 2
             }
         },
         {
