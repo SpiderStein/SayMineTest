@@ -99,30 +99,16 @@ namespace Scraper
                     var scrapedUrls = new HashSet<string>[this._amountOfHopsAllowedFromDomain];
                     this.collectEmailsAndUrlsFromAElems(scrapedEmails, scrapedUrls[0], scrapedElems, domain);
 
-                    for (int hop = 0; hop < scrapedUrls.Length; hop++)
+                    for (int hop = 1; hop < this._amountOfHopsAllowedFromDomain - 1; hop++)
                     {
-                        if (hop + 1 == this._amountOfHopsAllowedFromDomain)
+                        foreach (var url in scrapedUrls[hop - 1])
                         {
-                            foreach (var url in scrapedUrls[hop])
-                            {
-                                this._driver.Navigate().GoToUrl(url);
-                                scrapedElems = this._driver.FindElementsByXPath(xpath);
-                                foreach (var elem in scrapedElems)
-                                {
-                                    this.collectEmailsFromText(scrapedEmails, elem.Text.Split(), url);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            foreach (var url in scrapedUrls[hop])
-                            {
-                                this._driver.Navigate().GoToUrl(url);
-                                scrapedElems = this._driver.FindElementsByXPath(xpath);
-                                this.collectEmailsAndUrlsFromAElems(scrapedEmails, scrapedUrls[hop + 1], scrapedElems, url);
-                            }
+                            this._driver.Navigate().GoToUrl(url);
+                            scrapedElems = this._driver.FindElementsByXPath(xpath);
+                            this.collectEmailsAndUrlsFromAElems(scrapedEmails, scrapedUrls[hop], scrapedElems, url);
                         }
                     }
+                    collectLastHopEmails(xpath, scrapedElems, scrapedEmails, scrapedUrls);
 
                     execTimer.Stop();
                     return new ScrapeResult { Domain = domain, ElapsedTime = execTimer.Elapsed, EmailAddresses = scrapedEmails.Values, ID = Guid.NewGuid(), LangDetectResult = detectRes };
@@ -133,6 +119,19 @@ namespace Scraper
                     throw;
                 }
             })
+        }
+
+        private void collectLastHopEmails(string xpath, ReadOnlyCollection<IWebElement> scrapedElems, Dictionary<string, ScrapedEmailAddress> scrapedEmails, HashSet<string>[] scrapedUrls)
+        {
+            foreach (var url in scrapedUrls[this._amountOfHopsAllowedFromDomain - 1])
+            {
+                this._driver.Navigate().GoToUrl(url);
+                scrapedElems = this._driver.FindElementsByXPath(xpath);
+                foreach (var elem in scrapedElems)
+                {
+                    this.collectEmailsFromText(scrapedEmails, elem.Text.Split(), url);
+                }
+            }
         }
 
         //  I chose to use Dictionary instead of hashset, so extending "EqualityComparer<T>" isn't needed.
