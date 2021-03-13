@@ -9,6 +9,7 @@ using System;
 using Serilog;
 using OpenQA.Selenium;
 using EmailValidation;
+using System.Collections.ObjectModel;
 
 namespace Scraper
 {
@@ -82,38 +83,49 @@ namespace Scraper
 
                     var scrapedElems = this._driver.FindElementsByXPath(xpath);
                     var scrapedEmails = new Dictionary<string, ScrapedEmailAddress>(); // Dictionary instead of hashset, so extending "EqualityComparer<T>" isn't needed.
-                    if (this._amountOfHopsAllowedFromDomain == 0)
+
+
+                    if (_amountOfHopsAllowedFromDomain == 0)
                     {
                         foreach (var elem in scrapedElems)
                         {
-                            var textWords = elem.Text.Split();
-                            foreach (var w in textWords)
-                            {
-                                if (w.Contains(@"@"))
-                                {
-                                    if (!scrapedEmails.ContainsKey(w))
-                                    {
-                                        // I take the assumption that it's well tested, and thus won't hurt the reliability of the unit testing.
-                                        scrapedEmails.Add(w, new ScrapedEmailAddress { EmailAddress = w, FoundInUrl = domain, IsValid = EmailValidator.Validate(w, true, true) });
-                                    }
-                                }
-                            }
+                            this.collectEmailsFromText(scrapedEmails, elem.Text.Split(), domain);
                         }
                         execTimer.Stop();
                         return new ScrapeResult { Domain = domain, ElapsedTime = execTimer.Elapsed, EmailAddresses = scrapedEmails.Values, ID = Guid.NewGuid(), LangDetectResult = detectRes };
                     }
 
 
+                    var scrapedUrls = new HashSet<string>[this._amountOfHopsAllowedFromDomain];
+                    this.collectEmailsAndUrlsFromAElems(scrapedEmails, scrapedUrls[0], scrapedElems, domain);
 
-
-
-                    for (int hops = 0; hops < this._amountOfHopsAllowedFromDomain; hops++)
+                    for (int hop = 0; hop < scrapedUrls.Length; hop++)
                     {
-                        if (hops + 1 == this._amountOfHopsAllowedFromDomain) // If it's the highest allowed hop.
+                        if (hop + 1 == this._amountOfHopsAllowedFromDomain)
                         {
-
+                            foreach (var url in scrapedUrls[hop])
+                            {
+                                this._driver.Navigate().GoToUrl(url);
+                                scrapedElems = this._driver.FindElementsByXPath(xpath);
+                                foreach (var elem in scrapedElems)
+                                {
+                                    this.collectEmailsFromText(scrapedEmails, elem.Text.Split(), url);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var url in scrapedUrls[hop])
+                            {
+                                this._driver.Navigate().GoToUrl(url);
+                                scrapedElems = this._driver.FindElementsByXPath(xpath);
+                                this.collectEmailsAndUrlsFromAElems(scrapedEmails, scrapedUrls[hop + 1], scrapedElems, url);
+                            }
                         }
                     }
+
+                    execTimer.Stop();
+                    return new ScrapeResult { Domain = domain, ElapsedTime = execTimer.Elapsed, EmailAddresses = scrapedEmails.Values, ID = Guid.NewGuid(), LangDetectResult = detectRes };
                 }
                 catch (System.Exception ex)
                 {
@@ -123,6 +135,43 @@ namespace Scraper
             })
         }
 
+        //  I chose to use Dictionary instead of hashset, so extending "EqualityComparer<T>" isn't needed.
+        /// <summary>
+        /// Fills the provided collection with emails that are found in the given text.
+        /// If email duplicate is found, no action is done on the collection.
+        /// </summary>
+        /// <returns>"True" if emails are found.</returns>
+        private bool collectEmailsFromText(Dictionary<string, ScrapedEmailAddress> collectionToBeFilled, string[] text, string urlOfTextWebPage)
+        {
+            var isEmailFound = false;
+            foreach (var word in text)
+            {
+                if (word.Contains(@"@"))
+                {
+                    isEmailFound = true;
+                    if (!collectionToBeFilled.ContainsKey(word))
+                    {
+                        // I take the assumption that it's well tested, and thus won't hurt the reliability of the unit testing.
+                        collectionToBeFilled.Add(word, new ScrapedEmailAddress { EmailAddress = word, FoundInUrl = urlOfTextWebPage, IsValid = EmailValidator.Validate(word, true, true) });
+                    }
+                }
+            }
+            return isEmailFound;
+        }
+
+        private void collectEmailsAndUrlsFromAElems(
+            Dictionary<string, ScrapedEmailAddress> emailsCollToBeFilled, HashSet<string> urlsCollToBeFilled, ReadOnlyCollection<IWebElement> aElems, string elemPageUrl)
+        {
+            foreach (var elem in aElems)
+            {
+                var isHrefEmail = false;
+                isHrefEmail = this.collectEmailsFromText(emailsCollToBeFilled, elem.Text.Split(), elemPageUrl);
+                if (!isHrefEmail)
+                {
+                    urlsCollToBeFilled.Add(elem.GetAttribute("href"));
+                }
+            }
+        }
 
 
         private void LogScrapeResults(IEnumerable<string> domains, IEnumerable<ScrapeResult> results)
