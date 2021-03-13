@@ -1,14 +1,51 @@
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace Scraper
 {
-    public class DummyB : IDummyBDAL
+    public class DummyB : IDummyBDAL, IDisposable
     {
-        // private static readonly BlockingCollection<ScrapeResult>
-        public Task Insert(IEnumerable<ScrapeResult> scrapeResults)
+        private BlockingCollection<ScrapeResult> _scrapeResults;
+        private ILogger _logger;
+        private bool _disposed = false;
+
+        public DummyB(
+            BlockingCollection<ScrapeResult> scrapeResults,
+            ILogger logger
+        )
         {
-            throw new System.NotImplementedException();
+            this._scrapeResults = scrapeResults;
+            this._logger = logger;
+        }
+
+        public Task Insert(ScrapeResult scrapeResult)
+        {
+            return Task.Run(() =>
+            {
+                _logger.Debug(scrapeResult.ToString());
+                this._scrapeResults.Add(scrapeResult);
+            });
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            this._scrapeResults.Dispose();
+        }
+
+        ~DummyB() => this.Dispose(false);
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

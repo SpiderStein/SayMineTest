@@ -23,7 +23,12 @@
                 "CHROME_DRIVER_LOCATION": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper",
                 "TJ": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper/Assets/TJ.txt",
                 "BEAST": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper/Assets/Beast.txt",
-                "AMOUNT_OF_HOPS_ALLOWED_FROM_GIVEN_DOMAIN": 2
+                "AMOUNT_OF_HOPS_ALLOWED_FROM_GIVEN_DOMAIN": 2,
+                "TRANSLATOR_SECRET": "d0c6f0d8b1fb49899eb2af3b21f90ae3", // I'm aware that the secret is saved in the repo.
+                "TRANSLATOR_REGION": "global",
+                "TRANSLATOR_ENDPOINT": "https://api.cognitive.microsofttranslator.com/",
+                "TRANSLATOR_TRANSLATE_FUNC_ROUTE": "translate?api-version=3.0",
+                "TRANSLATOR_DETECT_LANG_FUNC_ROUTE": "detect?api-version=3.0"
             }
         },
         {

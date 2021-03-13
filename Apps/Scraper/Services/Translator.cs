@@ -24,8 +24,8 @@ namespace Scraper
             string endpoint,
             string region,
             HttpClient translationServiceClient,
-            string translateFunctionRoute,
-            string detectLangFunctionRoute,
+            string translateFuncRoute,
+            string detectLangFuncRoute,
             ILogger logger
         )
         {
@@ -33,8 +33,8 @@ namespace Scraper
             this._endpoint = endpoint;
             this._region = region;
             this._client = translationServiceClient;
-            this._translateRoute = translateFunctionRoute;
-            this._detectLangRoute = detectLangFunctionRoute;
+            this._translateRoute = translateFuncRoute;
+            this._detectLangRoute = detectLangFuncRoute;
             this.log = logger;
         }
 

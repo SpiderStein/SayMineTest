@@ -5,6 +5,6 @@ namespace Scraper
 {
     public interface IDummyBDAL
     {
-        Task Insert(IEnumerable<ScrapeResult> scrapeResults);
+        Task Insert(ScrapeResult scrapeResult);
     }
 }
