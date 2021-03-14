@@ -5,25 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "OS-COMMENT1": "Use IntelliSense to find out which attributes exist for C# debugging",
-            "OS-COMMENT2": "Use hover for the description of the existing attributes",
-            "OS-COMMENT3": "For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md",
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "OS-COMMENT4": "If you have changed target frameworks, make sure to update the program path.",
             "program": "${workspaceFolder}/Apps/Scraper/bin/Debug/netcoreapp3.1/Scraper.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Apps/Scraper",
-            "OS-COMMENT5": "For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console",
             "console": "internalConsole",
             "stopAtEntry": false,
             "env": {
                 "CHROME_DRIVER_LOCATION": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper",
                 "TJ": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper/Assets/TJ.txt",
                 "BEAST": "D:/Users/Idan Steinberg/Projects/SayMineTest/Apps/Scraper/Assets/Beast.txt",
-                "AMOUNT_OF_HOPS_ALLOWED_FROM_GIVEN_DOMAIN": 2,
+                "AMOUNT_OF_HOPS_ALLOWED_FROM_GIVEN_DOMAIN": "2",
                 "TRANSLATOR_SECRET": "d0c6f0d8b1fb49899eb2af3b21f90ae3", // I'm aware that the secret is saved in the repo.
                 "TRANSLATOR_REGION": "global",
                 "TRANSLATOR_ENDPOINT": "https://api.cognitive.microsofttranslator.com/",

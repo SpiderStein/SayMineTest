@@ -18,68 +18,6 @@ namespace Scraper
 {
     public class Entrypoint
     {
-        // TODO: Validate the configuration if there's a spare time.
-        // public async static Task Main()
-        // {
-        //     _domains = LoadDomainsFromFile();
-
-        //     var stopwatch = new Stopwatch();
-        //     stopwatch.Start();
-
-        //     ScrapeAllDomains();
-
-        //     stopwatch.Stop();
-
-        //     PrintScrapeResult(stopwatch);
-
-        //     var chromeOptions = new ChromeOptions();
-        //     chromeOptions.AddArgument("--disable-extensions");
-        //     chromeOptions.AddArgument("--incognito");
-        //     chromeOptions.AddArgument("--disable-plugins-discovery");
-        //     chromeOptions.AddArgument("--headless");
-        //     chromeOptions.AddArgument("--disable-dev-shm-usage");
-        //     chromeOptions.AddArgument("--ignore-certificate-errors");
-        //     chromeOptions.AddArgument("--window-size=1920,1200");
-        //     chromeOptions.AddArgument("--user-agent=\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\"");
-
-        //     var webDriver = new ChromeDriver(Environment.GetEnvironmentVariable("CHROME_DRIVER_LOCATION"), chromeOptions);
-        //     webDriver.Navigate().GoToUrl("https://www.sports-reference.com/privacy.html");
-        //     System.Console.WriteLine(webDriver.Title);
-
-        //     var elems = webDriver.FindElements(By.XPath("//*[contains(text(),'privacy')] | //*[contains(text(),'Privacy')] | //*[contains(text(),'PRIVACY')]"));
-        //     System.Console.WriteLine(webDriver.WindowHandles.Count());
-        //     elems[0].Click();
-        //     System.Console.WriteLine(webDriver.WindowHandles.Count());
-
-        //     Looks like there's no matches func supported
-
-        //     var subKey = "d0c6f0d8b1fb49899eb2af3b21f90ae3";
-        //     var endpoint = "https://api.cognitive.microsofttranslator.com/";
-        //     var location = "global";
-        //     // Output languages are defined as parameters, input language detected.
-        //     string route = "/translate?api-version=3.0&to=en";
-        //     string textToTranslate = "פרטיות";
-        //     object[] body = new object[] { new { Text = textToTranslate } };
-        //     var requestBody = JsonConvert.SerializeObject(body);
-
-        //     using (var client = new HttpClient())
-        //     using (var request = new HttpRequestMessage())
-        //     {
-        //         // Build the request.
-        //         request.Method = HttpMethod.Post;
-        //         request.RequestUri = new Uri(endpoint + route);
-        //         request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-        //         request.Headers.Add("Ocp-Apim-Subscription-Key", subKey);
-        //         request.Headers.Add("Ocp-Apim-Subscription-Region", location);
-
-        //         // Send the request and get response.
-        //         HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
-        //         // Read response as a string.
-        //         string result = await response.Content.ReadAsStringAsync();
-        //         Console.WriteLine(result);
-        //     }
-        // }
-
         public static async Task Main()
         {
             using var logger = new LoggerConfiguration()
@@ -89,6 +27,7 @@ namespace Scraper
             logger.Fatal("TJ and BEAST the cats started to run after the mouse clicks in the web.. hopefully they'll hunt privacy related emails..");
             logger.Fatal(Environment.NewLine + File.ReadAllText(Environment.GetEnvironmentVariable("TJ")));
             logger.Fatal(Environment.NewLine + File.ReadAllText(Environment.GetEnvironmentVariable("BEAST")));
+            await Task.Delay(5000);
 
             var domains = LoadDomainsFromFile();
 
@@ -101,7 +40,7 @@ namespace Scraper
             chromeOptions.AddArgument("--ignore-certificate-errors");
             chromeOptions.AddArgument("--window-size=1920,1200");
             chromeOptions.AddArgument("--user-agent=\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\"");
-            var chromeDriver = new ChromeDriver(Environment.GetEnvironmentVariable("CHROME_DRIVER_LOCATION"), chromeOptions);
+            var chromeDriverLocation = Environment.GetEnvironmentVariable("CHROME_DRIVER_LOCATION");
 
             var translatorSecret = Environment.GetEnvironmentVariable("TRANSLATOR_SECRET");
             var translatorEndpoint = Environment.GetEnvironmentVariable("TRANSLATOR_ENDPOINT");
@@ -112,10 +51,12 @@ namespace Scraper
             var translator = new Translator(translatorSecret, translatorEndpoint, translatorRegion,
                 translationServiceClient, translatorTranslateFuncRoute, translatorDetectLangFuncRoute, logger);
 
-            var scraper = new ChromeScraper(chromeDriver, translator, logger, Byte.Parse(Environment.GetEnvironmentVariable("AMOUNT_OF_HOPS_ALLOWED_FROM_GIVEN_DOMAIN")));
+            var amountOfHopsAllowedFromDomain = Byte.Parse(Environment.GetEnvironmentVariable("AMOUNT_OF_HOPS_ALLOWED_FROM_GIVEN_DOMAIN"));
+
+            var chromeScraperFactory = new ChromeScraperFactory(chromeOptions, translator, logger, amountOfHopsAllowedFromDomain, chromeDriverLocation);
 
             using var db = new DummyB(new BlockingCollection<ScrapeResult>(), logger);
-            var program = new Program(db, scraper, domains, logger);
+            var program = new Program(db, chromeScraperFactory, domains, logger);
             await program.Run().ConfigureAwait(false);
         }
 

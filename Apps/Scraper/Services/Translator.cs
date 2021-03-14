@@ -52,7 +52,7 @@ namespace Scraper
                 var reqBody = JsonConvert.SerializeObject(new[] { new { Text = input } });
                 using var request = new HttpRequestMessage();
                 request.Method = HttpMethod.Post;
-                request.RequestUri = new Uri(this._endpoint + this._translateRoute);
+                request.RequestUri = new Uri(this._endpoint + this._translateRoute + $"&from={from}&to={to}");
                 request.Content = new StringContent(reqBody, Encoding.UTF8, "application/json");
                 request.Headers.Add("Ocp-Apim-Subscription-Key", this._secret);
                 request.Headers.Add("Ocp-Apim-Subscription-Region", this._region);
@@ -61,6 +61,8 @@ namespace Scraper
                 try
                 {
                     response = await this._client.SendAsync(request, tokenSrc.Token).ConfigureAwait(false);
+                    string result = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<TranslationResult[]>(result)[0];
                 }
                 catch (Exception ex)
                 {
@@ -72,8 +74,6 @@ namespace Scraper
                     }
                     throw;
                 }
-                string result = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<TranslationResult[]>(result)[0];
             });
         }
 

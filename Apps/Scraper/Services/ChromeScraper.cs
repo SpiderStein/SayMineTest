@@ -61,7 +61,7 @@ namespace Scraper
 
 
 
-                    var detectRes = await _translator.DetectLang(elems[0].Text).ConfigureAwait(false);
+                    var detectRes = await _translator.DetectLang(elems[0].GetAttribute("textContent")).ConfigureAwait(false);
                     var docLang = detectRes.Language;
                     StringBuilder privacyInDocLang;
                     if (docLang != "en")
@@ -89,7 +89,7 @@ namespace Scraper
                     {
                         foreach (var elem in scrapedElems)
                         {
-                            this.collectEmailsFromText(scrapedEmails, elem.Text.Split(), domain);
+                            this.collectEmailsFromText(scrapedEmails, elem.GetAttribute("textContent").Split(), domain);
                         }
                         execTimer.Stop();
                         return new ScrapeResult { Domain = domain, ElapsedTime = execTimer.Elapsed, EmailAddresses = scrapedEmails.Values, ID = Guid.NewGuid(), LangDetectResult = detectRes };
@@ -97,6 +97,10 @@ namespace Scraper
 
 
                     var scrapedUrls = new HashSet<string>[this._amountOfHopsAllowedFromDomain];
+                    for (int index = 0; index < scrapedUrls.Length; index++)
+                    {
+                        scrapedUrls[index] = new HashSet<string>();
+                    }
                     this.collectEmailsAndUrlsFromAElems(scrapedEmails, scrapedUrls[0], scrapedElems, domain);
 
                     for (int hop = 1; hop < this._amountOfHopsAllowedFromDomain - 1; hop++)
@@ -118,18 +122,18 @@ namespace Scraper
                     this._log.Error(ex.ToString());
                     throw;
                 }
-            })
+            });
         }
 
         private void collectLastHopEmails(string xpath, ReadOnlyCollection<IWebElement> scrapedElems, Dictionary<string, ScrapedEmailAddress> scrapedEmails, HashSet<string>[] scrapedUrls)
         {
-            foreach (var url in scrapedUrls[this._amountOfHopsAllowedFromDomain - 1])
+            foreach (var url in scrapedUrls[this._amountOfHopsAllowedFromDomain - 2])
             {
                 this._driver.Navigate().GoToUrl(url);
                 scrapedElems = this._driver.FindElementsByXPath(xpath);
                 foreach (var elem in scrapedElems)
                 {
-                    this.collectEmailsFromText(scrapedEmails, elem.Text.Split(), url);
+                    this.collectEmailsFromText(scrapedEmails, elem.GetAttribute("textContent").Split(), url);
                 }
             }
         }
@@ -164,23 +168,11 @@ namespace Scraper
             foreach (var elem in aElems)
             {
                 var isHrefEmail = false;
-                isHrefEmail = this.collectEmailsFromText(emailsCollToBeFilled, elem.Text.Split(), elemPageUrl);
+                isHrefEmail = this.collectEmailsFromText(emailsCollToBeFilled, elem.GetAttribute("textContent").Split(), elemPageUrl);
                 if (!isHrefEmail)
                 {
                     urlsCollToBeFilled.Add(elem.GetAttribute("href"));
                 }
-            }
-        }
-
-
-        private void LogScrapeResults(IEnumerable<string> domains, IEnumerable<ScrapeResult> results)
-        {
-            this._log.Information($"Scraping {domains.Count()} domains took: {this._stopwatch.Elapsed}");
-
-            // print first results
-            foreach (var res in results.Take(10))
-            {
-                this._log.Information($"domain: {res.Domain} emails: {res}");
             }
         }
     }
