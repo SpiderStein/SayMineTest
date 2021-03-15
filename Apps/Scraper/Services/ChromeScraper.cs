@@ -13,12 +13,13 @@ using System.Collections.ObjectModel;
 
 namespace Scraper
 {
-    public class ChromeScraper : IScraper
+    public class ChromeScraper : IScraper, IDisposable
     {
         private ChromeDriver _driver;
         private ILogger _log;
         private Translator _translator;
-        byte _amountOfHopsAllowedFromDomain;
+        private byte _amountOfHopsAllowedFromDomain;
+        private bool _disposed = false;
 
         public ChromeScraper(
             ChromeDriver chromeDriver,
@@ -39,7 +40,7 @@ namespace Scraper
 
 
 
-        
+
         public Task<ScrapeResult> GetPrivacyRelatedEmails(string domain)
         {
             return Task.Run<ScrapeResult>(async () =>
@@ -173,6 +174,23 @@ namespace Scraper
                     urlsCollToBeFilled.Add(elem.GetAttribute("href"));
                 }
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            this._driver.Dispose();
+        }
+        ~ChromeScraper() => this.Dispose(false);
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
