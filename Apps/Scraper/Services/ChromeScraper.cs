@@ -182,8 +182,7 @@ namespace Scraper
             {
                 return;
             }
-
-            this._driver.Dispose();
+            this._driver.Quit();
         }
         ~ChromeScraper() => this.Dispose(false);
 
