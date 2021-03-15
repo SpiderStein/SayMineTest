@@ -25,7 +25,7 @@ namespace Scraper
         {
             return Task.Run(() =>
             {
-                _logger.Debug(scrapeResult.ToString());
+                _logger.Debug($"Inserting to DummyB, \"{scrapeResult.Domain}\" scraping product");
                 this._scrapeResults.Add(scrapeResult);
             });
         }

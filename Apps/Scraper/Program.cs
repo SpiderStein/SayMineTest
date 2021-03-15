@@ -11,19 +11,22 @@ namespace Scraper
     {
         private IDummyBDAL _dummyBDAL;
         private IScraperFactory _scraperFactory;
-        private IEnumerable<string> _domains;
+        private string[] _domains;
         private ILogger _logger;
+        private Byte _amountOfCores;
         public Program(
             IDummyBDAL dummyBDAL,
             IScraperFactory scraperFactory,
-            IEnumerable<string> domains,
-            ILogger logger
+            string[] domains,
+            ILogger logger,
+            byte amountOfCores
         )
         {
             this._dummyBDAL = dummyBDAL;
             this._scraperFactory = scraperFactory;
             this._domains = domains;
             this._logger = logger;
+            this._amountOfCores = amountOfCores;
         }
 
         public async Task Run()
@@ -32,16 +35,26 @@ namespace Scraper
             try
             {
                 var tasks = new List<Task>();
-                foreach (var d in this._domains)
+                for (int index = 0; index < this._domains.Length; index += _amountOfCores)
                 {
-                    tasks.Add(Task.Run(async () =>
+                    if (index + this._amountOfCores >= this._domains.Length)
                     {
-                        var scraper = this._scraperFactory.Get();
-                        var scrapeResult = await scraper.GetPrivacyRelatedEmails(d).ConfigureAwait(false);
-                        await this._dummyBDAL.Insert(scrapeResult).ConfigureAwait(false);
-                    }));
+                        this._domains[index..].AsParallel().ForAll((d) =>
+                        {
+                            this.addScrapeTaskAndRun(tasks, d);
+                        });
+                        await Task.WhenAll(tasks);
+                    }
+                    else
+                    {
+                        this._domains[index..(index + this._amountOfCores)].AsParallel().ForAll((d) =>
+                        {
+                            this.addScrapeTaskAndRun(tasks, d);
+                        });
+                        await Task.WhenAll(tasks);
+                        tasks.Clear();
+                    }
                 }
-                await Task.WhenAll(tasks);
             }
             catch (System.Exception ex)
             {
@@ -49,7 +62,21 @@ namespace Scraper
                 throw;
             }
             execTimer.Stop();
-            this._logger.Information(execTimer.Elapsed.TotalMilliseconds.ToString());
+            this._logger.Information($"The time it took to scrape all the domains is the following: { execTimer.Elapsed.TotalMilliseconds.ToString()}");
+        }
+
+        private void addScrapeTaskAndRun(List<Task> tasks, string domainToScrape)
+        {
+            tasks.Add(
+                Task.Run(async () =>
+                {
+                    var scraper = this._scraperFactory.Get();
+                    this._logger.Information($"Starting to scrape: \"{domainToScrape}\"");
+                    var scrapeResult = await scraper.GetPrivacyRelatedEmails(domainToScrape).ConfigureAwait(false);
+                    this._logger.Information($"\"{domainToScrape}\" is scraped{Environment.NewLine}The scraping product is the following:{Environment.NewLine}{scrapeResult.ToString()}");
+                    await this._dummyBDAL.Insert(scrapeResult).ConfigureAwait(false);
+                    this._logger.Information($"\"{domainToScrape}\" is saved in DummyB");
+                }));
         }
     }
 }

@@ -52,16 +52,19 @@ namespace Scraper
                 translationServiceClient, translatorTranslateFuncRoute, translatorDetectLangFuncRoute, logger);
 
             var amountOfHopsAllowedFromDomain = Byte.Parse(Environment.GetEnvironmentVariable("AMOUNT_OF_HOPS_ALLOWED_FROM_GIVEN_DOMAIN"));
+            var amountOfCores = Byte.Parse(Environment.GetEnvironmentVariable("AMOUNT_OF_CORES"));
 
             var chromeScraperFactory = new ChromeScraperFactory(chromeOptions, translator, logger, amountOfHopsAllowedFromDomain, chromeDriverLocation);
 
             using var db = new DummyB(new BlockingCollection<ScrapeResult>(), logger);
-            var program = new Program(db, chromeScraperFactory, domains, logger);
+            var program = new Program(db, chromeScraperFactory, domains, logger, amountOfCores);
             await program.Run().ConfigureAwait(false);
         }
 
-        private static IEnumerable<string> LoadDomainsFromFile()
+        private static string[] LoadDomainsFromFile()
         {
+            // I modified the written domains to include the protocol that's used to communicate with them.
+            // It could also be done in the code, but arbitrarily chose not to.
             var listAddress = new List<string>();
             var filePath = Path.Combine(Environment.CurrentDirectory, "domains.csv");
 
@@ -75,7 +78,7 @@ namespace Scraper
                 listAddress.Add(csv.GetField(0));
             }
 
-            return listAddress;
+            return listAddress.ToArray();
         }
     }
 }

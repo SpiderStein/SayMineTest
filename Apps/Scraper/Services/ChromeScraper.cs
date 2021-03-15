@@ -39,8 +39,7 @@ namespace Scraper
 
 
 
-        // I should save immediately after getting the result, outside of the call.
-        /// <returns>The value can be null</returns>
+        
         public Task<ScrapeResult> GetPrivacyRelatedEmails(string domain)
         {
             return Task.Run<ScrapeResult>(async () =>

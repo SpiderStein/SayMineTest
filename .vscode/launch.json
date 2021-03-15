@@ -23,7 +23,8 @@
                 "TRANSLATOR_REGION": "global",
                 "TRANSLATOR_ENDPOINT": "https://api.cognitive.microsofttranslator.com/",
                 "TRANSLATOR_TRANSLATE_FUNC_ROUTE": "translate?api-version=3.0",
-                "TRANSLATOR_DETECT_LANG_FUNC_ROUTE": "detect?api-version=3.0"
+                "TRANSLATOR_DETECT_LANG_FUNC_ROUTE": "detect?api-version=3.0",
+                "AMOUNT_OF_CORES": "5"
             }
         },
         {
